@@ -16,11 +16,6 @@
 \usepackage{enumitem}
 \usepackage[hidelinks]{hyperref}
 
-\definecolor{IEEEBlue}{HTML}{163A59}
-\definecolor{RuleGray}{HTML}{9AA7B1}
-\definecolor{TableHead}{HTML}{EAF0F4}
-\definecolor{SoftGray}{HTML}{F5F7F8}
-
 \setlength{\parindent}{1.25em}
 \setlength{\parskip}{0.2em}
 \setlength{\tabcolsep}{5pt}
@@ -30,21 +25,21 @@
 
 \pagestyle{fancy}
 \fancyhf{}
-\fancyhead[L]{\footnotesize\color{IEEEBlue}\textsc{Supplementary Material}}
-\fancyhead[R]{\footnotesize\color{RuleGray}Trace-Aware Power System Scheduling}
+\fancyhead[L]{\footnotesize\textsc{Supplementary Material}}
+\fancyhead[R]{\footnotesize Trace-Aware Power System Scheduling}
 \fancyfoot[C]{\footnotesize\thepage}
 \renewcommand{\headrulewidth}{0.4pt}
-\renewcommand{\headrule}{\hbox to\headwidth{\color{RuleGray}\leaders\hrule height \headrulewidth\hfill}}
+\renewcommand{\headrule}{\hbox to\headwidth{\leaders\hrule height \headrulewidth\hfill}}
 
 \titleformat{\section}
-  {\large\bfseries\color{IEEEBlue}}
+  {\large\bfseries}
   {\thesection}{0.65em}{}
-  [\vspace{-0.35em}\color{RuleGray}\titlerule]
+  [\vspace{-0.35em}\titlerule]
 \titlespacing*{\section}{0pt}{1.15em}{0.65em}
 
 \captionsetup{
   font=small,
-  labelfont={bf,color=IEEEBlue},
+  labelfont=bf,
   textfont=small,
   justification=centering,
   hypcap=false,
@@ -58,12 +53,11 @@
 
 \newcolumntype{Y}{>{\raggedright\arraybackslash}X}
 \newcolumntype{C}{>{\centering\arraybackslash}X}
-\newcommand{\tableheader}{\rowcolor{TableHead}}
 
 \begin{document}
 
 \begin{center}
-  {\small\bfseries\color{IEEEBlue}\MakeUppercase{Supplementary Material}}\\[0.55em]
+  {\small\bfseries\MakeUppercase{Supplementary Material}}\\[0.55em]
   {\LARGE\bfseries Trace-Aware Power System Scheduling with\\[0.18em]
   Heterogeneous Power Sources: A Learning-Based Framework}\\[0.8em]
   {\normalsize Kai Xiong, Xiaomeng Ai, Jingguan Liu, Shichang Cui, Jiakun Fang,\\
@@ -74,13 +68,12 @@
 \end{center}
 
 \vspace{0.3em}
-\noindent\colorbox{SoftGray}{%
-  \parbox{\dimexpr\textwidth-2\fboxsep\relax}{\small
+\noindent
   This document accompanies the paper cited above. It describes, in a step-by-step manner,
   the test-system settings, the neural-network training procedure, the exact mixed-integer
   linear reformulation of the trained network, and the supplementary figures that support
   the numerical studies. All quantities are reported in the same units as in the main
-  paper, and the notation is consistent with the one used there.}}
+  paper, and the notation is consistent with the one used there.
 
 \section{Modified IEEE 14-Bus Test System}
 
@@ -107,7 +100,7 @@ accuracy can be controlled by the number of segments.
 \small
 \begin{tabularx}{\textwidth}{@{}Y>{\raggedleft\arraybackslash}p{0.42\linewidth}@{}}
 \toprule
-\tableheader Parameter & Value \\
+Parameter & Value \\
 \midrule
 Base power & 100 MVA \\
 Buses / branches & 14 / 19 \\
@@ -141,7 +134,7 @@ from these coefficients for every unit.
 \setlength{\tabcolsep}{12pt}
 \begin{tabular}{@{}ccccccc@{}}
 \toprule
-\tableheader Unit & Bus & \multicolumn{2}{c}{$P$ (MW)} & $c_2$ & $c_1$ & $c_0$ \\
+Unit & Bus & \multicolumn{2}{c}{$P$ (MW)} & $c_2$ & $c_1$ & $c_0$ \\
 \cmidrule(lr){3-4}
  & & $P^{\max}$ & $P^{\min}$ & & & \\
 \midrule
@@ -168,7 +161,7 @@ network has two hidden layers with 24 and 12 neurons, respectively, and ReLU act
 \small
 \begin{tabularx}{\textwidth}{@{}Y>{\raggedleft\arraybackslash}p{0.52\linewidth}@{}}
 \toprule
-\tableheader Parameter & Value \\
+Parameter & Value \\
 \midrule
 Retained samples & 34,427 \\
 Train / validation / test & 70\% / 15\% / 15\% \\
@@ -199,7 +192,7 @@ rated wind capacity by the hourly wind factor. Both profiles are listed for all 
 \setlength{\tabcolsep}{10pt}
 \begin{tabular}{@{}ccc@{\hspace{2.2em}}ccc@{\hspace{2.2em}}ccc@{}}
 \toprule
-\tableheader Hour & Load & Wind & Hour & Load & Wind & Hour & Load & Wind \\
+Hour & Load & Wind & Hour & Load & Wind & Hour & Load & Wind \\
 \midrule
  1 & 0.7389 & 0.6602 &  9 & 0.8951 & 0.7793 & 17 & 0.8941 & 0.8218 \\
  2 & 0.7187 & 0.6830 & 10 & 0.9094 & 0.7860 & 18 & 0.9345 & 0.8220 \\
@@ -314,7 +307,7 @@ Table~\ref{tab:practical_summary} summarizes the principal settings of this case
 \small
 \begin{tabularx}{\textwidth}{@{}Y>{\raggedleft\arraybackslash}p{0.44\linewidth}@{}}
 \toprule
-\tableheader Parameter & Value \\
+Parameter & Value \\
 \midrule
 Base power & 100 MVA \\
 Buses / branches & 57 / 78 \\
@@ -348,7 +341,7 @@ mixed-integer linear program.
 \setlength{\tabcolsep}{9pt}
 \begin{tabular}{@{}rrrrrr@{}}
 \toprule
-\tableheader Bus & Units & $P^{\max}$ & $P^{\min}$ & RU/RD & $c_1$ \\
+Bus & Units & $P^{\max}$ & $P^{\min}$ & RU/RD & $c_1$ \\
  & & \multicolumn{3}{c}{(MW or MW/h)} & \\
 \midrule
  3 & 2 & 1200 & 240 & 720 & 38.5000 \\
