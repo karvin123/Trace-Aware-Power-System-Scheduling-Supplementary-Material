@@ -76,22 +76,36 @@
 \vspace{0.3em}
 \noindent\colorbox{SoftGray}{%
   \parbox{\dimexpr\textwidth-2\fboxsep\relax}{\small
-  This document accompanies the paper cited above. It provides the test-system settings,
-  neural-network training and MILP reformulation details, and supplementary figures used to
-  support the numerical studies.}}
+  This document accompanies the paper cited above. It describes, in a step-by-step manner,
+  the test-system settings, the neural-network training procedure, the exact mixed-integer
+  linear reformulation of the trained network, and the supplementary figures that support
+  the numerical studies. All quantities are reported in the same units as in the main
+  paper, and the notation is consistent with the one used there.}}
 
 \section{Modified IEEE 14-Bus Test System}
 
-The small-system study is based on the MATPOWER \texttt{case14} data, with branch 4--5
-removed. The wind source, scheduling settings, and source-share requirement are introduced
-as summarized below.
+The small-system study is carried out on a modified IEEE 14-bus system. The system data are
+taken from the MATPOWER \texttt{case14} test case, and branch 4--5 is removed so that the
+wind source at Bus 3 and the renewable-share tracing requirement at Bus 4 are separated by
+the network in a well-defined way. The resulting system has 14 buses, 19 branches, and five
+thermal units located at Buses 1, 2, 3, 6, and 8. A 100 MW wind farm is connected at Bus 3,
+and the tracing requirement is imposed at Bus 4. The scheduling horizon is 24 hours with an
+hourly resolution.
 
-\begin{minipage}[t]{0.455\textwidth}
-\captionsetup{type=table}
-\captionof{table}{Principal system and scheduling settings.}
+Table~\ref{tab:case14_summary} summarizes the principal system and scheduling settings. The
+base power is 100 MVA, which is also used as the per-unit base in the network model. The
+minimum output of every thermal unit is $0.2P^{\max}$, the ramp-up and ramp-down limits are
+$0.6P^{\max}$ per hour, and the minimum up and down times are both 3 hours. The startup cost
+is \$3000 per start. The quadratic fuel-cost curves are replaced by a four-segment linear
+approximation, so the resulting scheduling model is a mixed-integer linear program whose
+accuracy can be controlled by the number of segments.
+
+\begin{table}[!ht]
+\centering
+\caption{Principal system and scheduling settings of the modified IEEE 14-bus test system.}
 \label{tab:case14_summary}
-\footnotesize
-\begin{tabularx}{\linewidth}{@{}Y>{\raggedleft\arraybackslash}p{0.42\linewidth}@{}}
+\small
+\begin{tabularx}{\textwidth}{@{}Y>{\raggedleft\arraybackslash}p{0.42\linewidth}@{}}
 \toprule
 \tableheader Parameter & Value \\
 \midrule
@@ -109,14 +123,22 @@ Startup cost & \$3000/start \\
 Cost approximation & Four segments \\
 \bottomrule
 \end{tabularx}
-\end{minipage}
-\hfill
-\begin{minipage}[t]{0.50\textwidth}
-\captionsetup{type=table}
-\captionof{table}{Thermal-unit parameters.}
+\end{table}
+
+Table~\ref{tab:case14_gen} lists the parameters of the five thermal units. Unit TU1 at Bus 1
+is the largest unit, with a maximum output of 332.4 MW, and the remaining four units have
+maximum outputs of 140 MW or 100 MW. The minimum output of each unit is 20\% of its maximum
+output, which is consistent with the general setting in Table~\ref{tab:case14_summary}. The
+quadratic cost of each unit is $c_2P^2+c_1P+c_0$, where $P$ is the power output in MW; $c_2$
+is in \$/MW$^2$, $c_1$ in \$/MWh, and $c_0$ in \$. The four-segment approximation is built
+from these coefficients for every unit.
+
+\begin{table}[!ht]
+\centering
+\caption{Thermal-unit parameters of the modified IEEE 14-bus test system.}
 \label{tab:case14_gen}
-\footnotesize
-\setlength{\tabcolsep}{3.6pt}
+\small
+\setlength{\tabcolsep}{12pt}
 \begin{tabular}{@{}ccccccc@{}}
 \toprule
 \tableheader Unit & Bus & \multicolumn{2}{c}{$P$ (MW)} & $c_2$ & $c_1$ & $c_0$ \\
@@ -130,13 +152,21 @@ TU4 & 6 & 100.0 & 20.00 & 0.0100 & 41 & 0 \\
 TU5 & 8 & 100.0 & 20.00 & 0.0100 & 42 & 0 \\
 \bottomrule
 \end{tabular}
+\end{table}
 
-\vspace{0.75em}
-\captionsetup{type=table}
-\captionof{table}{Neural-network settings.}
+Table~\ref{tab:case14_nn} summarizes the neural-network surrogate used in this case. The
+training data are generated from historical wind and dispatch traces; after preprocessing,
+34,427 samples are retained and split into training, validation, and test sets with the
+ratio 70\%/15\%/15\%. The input vector contains the total wind power and the outputs of
+TU1--TU5, and the outputs are the renewable-share tracing variables at Buses 3 and 4. The
+network has two hidden layers with 24 and 12 neurons, respectively, and ReLU activations.
+
+\begin{table}[!ht]
+\centering
+\caption{Neural-network settings of the modified IEEE 14-bus test system.}
 \label{tab:case14_nn}
-\footnotesize
-\begin{tabularx}{\linewidth}{@{}Y>{\raggedleft\arraybackslash}p{0.52\linewidth}@{}}
+\small
+\begin{tabularx}{\textwidth}{@{}Y>{\raggedleft\arraybackslash}p{0.52\linewidth}@{}}
 \toprule
 \tableheader Parameter & Value \\
 \midrule
@@ -148,39 +178,37 @@ Hidden layers & [24, 12] \\
 Activation & ReLU \\
 \bottomrule
 \end{tabularx}
-\end{minipage}
+\end{table}
 
-\vspace{0.8em}
-The base active-load vector is
+The base active-load vector of the modified system is
 \begin{equation}
 P^{\mathrm{L}}_{\mathrm{base}}=
-[0,21.7,94.2,47.8,7.6,11.2,0,0,29.5,9.0,3.5,6.1,13.5,14.9]\ \mathrm{MW}.
+[0,21.7,94.2,47.8,7.6,11.2,0,0,29.5,9.0,3.5,6.1,13.5,14.9]\ \mathrm{MW},
 \label{eq:base_load}
 \end{equation}
-Table~\ref{tab:profiles} gives the hourly factors used in the 24-h scheduling study.
+where the entries correspond to Buses 1 to 14 in order. The load at bus $n$ and hour $t$ is
+obtained by multiplying the corresponding entry by the hourly load factor reported in
+Table~\ref{tab:profiles}; the wind power at hour $t$ is likewise obtained by multiplying the
+rated wind capacity by the hourly wind factor. Both profiles are listed for all 24 hours.
 
 \begin{table}[!ht]
 \centering
-\caption{Hourly load and wind factors.}
+\caption{Hourly load and wind factors used in the 24-h scheduling study.}
 \label{tab:profiles}
 \small
-\setlength{\tabcolsep}{8pt}
-\begin{tabular}{@{}ccc@{\hspace{1.5cm}}ccc@{}}
+\setlength{\tabcolsep}{10pt}
+\begin{tabular}{@{}ccc@{\hspace{2.2em}}ccc@{\hspace{2.2em}}ccc@{}}
 \toprule
-\tableheader Hour & Load & Wind & Hour & Load & Wind \\
+\tableheader Hour & Load & Wind & Hour & Load & Wind & Hour & Load & Wind \\
 \midrule
- 1 & 0.7389 & 0.6602 & 13 & 0.8923 & 0.6053 \\
- 2 & 0.7187 & 0.6830 & 14 & 0.8877 & 0.6038 \\
- 3 & 0.7035 & 0.7083 & 15 & 0.8840 & 0.6068 \\
- 4 & 0.6983 & 0.6925 & 16 & 0.8849 & 0.9050 \\
- 5 & 0.7040 & 0.6845 & 17 & 0.8941 & 0.8218 \\
- 6 & 0.7251 & 0.7142 & 18 & 0.9345 & 0.8220 \\
- 7 & 0.7764 & 0.7235 & 19 & 0.9899 & 0.6870 \\
- 8 & 0.8461 & 0.5415 & 20 & 0.9841 & 0.6559 \\
- 9 & 0.8951 & 0.7793 & 21 & 0.9691 & 0.6720 \\
-10 & 0.9094 & 0.7860 & 22 & 0.9436 & 0.6934 \\
-11 & 0.9078 & 0.7215 & 23 & 0.9094 & 0.7058 \\
-12 & 0.9071 & 0.6585 & 24 & 0.8674 & 0.6964 \\
+ 1 & 0.7389 & 0.6602 &  9 & 0.8951 & 0.7793 & 17 & 0.8941 & 0.8218 \\
+ 2 & 0.7187 & 0.6830 & 10 & 0.9094 & 0.7860 & 18 & 0.9345 & 0.8220 \\
+ 3 & 0.7035 & 0.7083 & 11 & 0.9078 & 0.7215 & 19 & 0.9899 & 0.6870 \\
+ 4 & 0.6983 & 0.6925 & 12 & 0.9071 & 0.6585 & 20 & 0.9841 & 0.6559 \\
+ 5 & 0.7040 & 0.6845 & 13 & 0.8923 & 0.6053 & 21 & 0.9691 & 0.6720 \\
+ 6 & 0.7251 & 0.7142 & 14 & 0.8877 & 0.6038 & 22 & 0.9436 & 0.6934 \\
+ 7 & 0.7764 & 0.7235 & 15 & 0.8840 & 0.6068 & 23 & 0.9094 & 0.7058 \\
+ 8 & 0.8461 & 0.5415 & 16 & 0.8849 & 0.9050 & 24 & 0.8674 & 0.6964 \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -188,49 +216,67 @@ Table~\ref{tab:profiles} gives the hourly factors used in the 24-h scheduling st
 \clearpage
 \section{Neural-Network Training and MILP Reformulation}
 
-For sample $m$, let $\mathbf{x}^{(m)}$ and $\mathbf{T}^{\mathrm{G},(m)}$ denote the input and
-tracing-label vectors. The input and output statistics are denoted by
-$(\boldsymbol{\mu}_x,\boldsymbol{\sigma}_x)$ and
-$(\boldsymbol{\mu}_y,\boldsymbol{\sigma}_y)$, respectively. The function $\sigma(\cdot)$ is
-the ReLU activation, $\Theta$ collects the trainable weights and biases, and $\oslash$ and
-$\odot$ denote elementwise division and multiplication. Training and output recovery are
-written as
+This section documents how the neural-network surrogate is trained and how the trained
+network is embedded into the scheduling model as exact mixed-integer linear constraints. The
+notation is the same as in the paper.
+
+\paragraph{Normalization.}
+For sample $m$, let $\mathbf{x}^{(m)}$ and $\mathbf{T}^{\mathrm{G},(m)}$ denote the input
+and tracing-label vectors, and let $(\boldsymbol{\mu}_x,\boldsymbol{\sigma}_x)$ and
+$(\boldsymbol{\mu}_y,\boldsymbol{\sigma}_y)$ be the corresponding sample means and standard
+deviations. The operator $\oslash$ denotes elementwise division. Each input and output is
+normalized to zero mean and unit variance before training:
 \begin{subequations}
-\label{eq:supp_nn_training}
+\label{eq:supp_normalization}
 \begin{align}
 \bar{\mathbf{x}}^{(m)}
-&=(\mathbf{x}^{(m)}-\boldsymbol{\mu}_x)\oslash\boldsymbol{\sigma}_x,
-&
+&=(\mathbf{x}^{(m)}-\boldsymbol{\mu}_x)\oslash\boldsymbol{\sigma}_x,\\
 \bar{\mathbf{y}}^{(m)}
-&=(\mathbf{T}^{\mathrm{G},(m)}-\boldsymbol{\mu}_y)\oslash\boldsymbol{\sigma}_y,
-\label{eq:supp_normalization}\\
+&=(\mathbf{T}^{\mathrm{G},(m)}-\boldsymbol{\mu}_y)\oslash\boldsymbol{\sigma}_y.
+\end{align}
+\end{subequations}
+Normalization prevents features with different physical scales, such as megawatt-level
+power and dimensionless shares, from dominating the training objective.
+
+\paragraph{Forward pass and training loss.}
+The function $\sigma(\cdot)$ is the ReLU activation, and $\Theta$ collects the trainable
+weights and biases. The forward pass of the fully connected network with $L$ hidden layers
+is
+\begin{subequations}
+\label{eq:supp_forward}
+\begin{align}
 \mathbf{z}^{1,(m)}
-&=\sigma(\mathbf{W}^{1}\bar{\mathbf{x}}^{(m)}+\mathbf{b}^{1}),
-&
+&=\sigma(\mathbf{W}^{1}\bar{\mathbf{x}}^{(m)}+\mathbf{b}^{1}),\\
 \mathbf{z}^{p,(m)}
-&=\sigma(\mathbf{W}^{p}\mathbf{z}^{p-1,(m)}+\mathbf{b}^{p}),\quad p=2,\ldots,L,
-\label{eq:supp_hidden_layers}\\
+&=\sigma(\mathbf{W}^{p}\mathbf{z}^{p-1,(m)}+\mathbf{b}^{p}),\quad p=2,\ldots,L,\\
 \hat{\mathbf{y}}^{(m)}
-&=\mathbf{W}^{L+1}\mathbf{z}^{L,(m)}+\mathbf{b}^{L+1},
-&
-\Theta
-&=\{\mathbf{W}^{p},\mathbf{b}^{p}\}_{p=1}^{L+1},
-\label{eq:supp_output_parameters}\\
+&=\mathbf{W}^{L+1}\mathbf{z}^{L,(m)}+\mathbf{b}^{L+1},\qquad
+\Theta=\{\mathbf{W}^{p},\mathbf{b}^{p}\}_{p=1}^{L+1},
+\end{align}
+\end{subequations}
+where $\hat{\mathbf{y}}^{(m)}$ is the network output in the normalized space. Training
+minimizes the mean squared error between the normalized prediction and the normalized
+label, and the trained output is mapped back to the physical space by elementwise
+multiplication~($\odot$) with the output standard deviation followed by addition of the
+output mean:
+\begin{subequations}
+\label{eq:supp_loss_recovery}
+\begin{align}
 \min_{\Theta}\;&\frac{1}{N_{\mathrm{sam}}}
 \sum_{m=1}^{N_{\mathrm{sam}}}
-\|\hat{\mathbf{y}}^{(m)}-\bar{\mathbf{y}}^{(m)}\|_2^2,
-\label{eq:supp_training_loss}\\
+\|\hat{\mathbf{y}}^{(m)}-\bar{\mathbf{y}}^{(m)}\|_2^2,\\
 \widetilde{\mathbf{T}}^{\mathrm{G},(m)}
 &=\boldsymbol{\mu}_y+\boldsymbol{\sigma}_y\odot\hat{\mathbf{y}}^{(m)}.
-\label{eq:supp_output_recovery}
 \end{align}
 \end{subequations}
 In the scheduling model, the same forward mapping is evaluated period by period by replacing
-the sample index $m$ with the scheduling index $t$.
+the sample index $m$ with the scheduling index $t$; the normalization statistics are
+computed from the training data and kept fixed during scheduling.
 
+\paragraph{Exact MILP embedding of the ReLU network.}
 For a hidden neuron with affine input $\hat z$, ReLU output $z=\max\{\hat z,0\}$, and valid
-bounds $\underline h\leq\hat z\leq\bar h$, introduce a binary activation variable $a$. Its exact
-mixed-integer linear representation is
+bounds $\underline h\leq\hat z\leq\bar h$, introduce a binary activation variable $a$. Its
+exact mixed-integer linear representation is
 \begin{subequations}
 \label{eq:supp_relu_milp}
 \begin{align}
@@ -239,18 +285,34 @@ z&\leq \hat z-\underline h(1-a), &
 z&\leq \bar h a,\qquad a\in\{0,1\}.\label{eq:supp_relu_upper}
 \end{align}
 \end{subequations}
-When $a=0$, the constraints give $z=0$ and require $\hat z\leq0$; when $a=1$, they give
-$z=\hat z\geq0$. Applying these constraints neuron by neuron, followed by the affine output
-layer and denormalization, yields the MILP embedding used in the paper.
+When $a=0$, the constraints force $z=0$ and require $\hat z\leq0$; when $a=1$, they give
+$z=\hat z\geq0$. Hence the binary variable selects exactly the active or inactive branch of
+the ReLU. The bounds $\underline h$ and $\bar h$ are propagated through the network by
+interval arithmetic, so the big-M coefficients are finite and tight. Applying these
+constraints neuron by neuron, followed by the affine output layer and the denormalization
+step in \eqref{eq:supp_loss_recovery}, yields the exact MILP embedding used in the paper.
+Because the embedding is exact, the only approximation in the scheduling model is the
+piecewise-linear representation of the fuel-cost curves.
 
 \section{Practical-Scale Transmission-System Case}
 
-\begin{minipage}[t]{0.43\textwidth}
-\captionsetup{type=table}
-\captionof{table}{Principal practical-scale case settings.}
+To demonstrate the scalability of the proposed approach, a larger transmission-system case
+is constructed from the MATPOWER \texttt{case57} test case. The system has 57 buses and 78
+branches. The 50 thermal units of the original case are aggregated at 16 buses, and eight
+wind farms of 1500 MW each are connected at Buses 7, 13, 23, 25, 42, 47, 49, and 53, giving
+a total wind capacity of 12,000 MW. The renewable-share tracing requirement is imposed at
+Bus 55, and Bus 38 is chosen as the slack bus. The line ratings of the original case are
+multiplied by 3 so that the transmission limits do not dominate the dispatch results and the
+focus remains on the scheduling and tracing decisions.
+
+Table~\ref{tab:practical_summary} summarizes the principal settings of this case.
+
+\begin{table}[!ht]
+\centering
+\caption{Principal practical-scale case settings.}
 \label{tab:practical_summary}
 \small
-\begin{tabularx}{\linewidth}{@{}Y>{\raggedleft\arraybackslash}p{0.44\linewidth}@{}}
+\begin{tabularx}{\textwidth}{@{}Y>{\raggedleft\arraybackslash}p{0.44\linewidth}@{}}
 \toprule
 \tableheader Parameter & Value \\
 \midrule
@@ -266,14 +328,24 @@ Line-rating multiplier & 3 \\
 Cost approximation & Four segments \\
 \bottomrule
 \end{tabularx}
-\end{minipage}
-\hfill
-\begin{minipage}[t]{0.54\textwidth}
-\captionsetup{type=table}
-\captionof{table}{Thermal-unit parameters by bus.}
+\end{table}
+
+Table~\ref{tab:practical_thermal} reports the aggregated thermal-unit parameters by bus. For
+each bus, the table gives the number of units connected to that bus and the totals of their
+maximum output, minimum output, ramp-up/ramp-down capability (RU/RD), and linear cost
+coefficient $c_1$. The listed capacity and ramping values are therefore totals over the
+units at the corresponding bus. The quadratic and constant cost coefficients are common to
+all units, with $c_2=0.01$ and $c_0=0$. As in the small system, the quadratic costs are
+represented by the four-segment linear approximation reported in
+Table~\ref{tab:practical_summary}, and the scheduling model is again solved as a
+mixed-integer linear program.
+
+\begin{table}[!ht]
+\centering
+\caption{Thermal-unit parameters by bus in the practical-scale case.}
 \label{tab:practical_thermal}
 \small
-\setlength{\tabcolsep}{4.2pt}
+\setlength{\tabcolsep}{9pt}
 \begin{tabular}{@{}rrrrrr@{}}
 \toprule
 \tableheader Bus & Units & $P^{\max}$ & $P^{\min}$ & RU/RD & $c_1$ \\
@@ -297,32 +369,35 @@ Cost approximation & Four segments \\
 57 & 4 & 1800 & 360 & 1080 & 33.3333 \\
 \bottomrule
 \end{tabular}
-\end{minipage}
-
-\vspace{0.7em}
-The listed capacity and ramping values are totals over the thermal units connected to each bus.
-The common quadratic and constant cost coefficients are $c_2=0.01$ and $c_0=0$,
-respectively. The quadratic costs are represented by the four-segment linear approximation
-reported in Table~\ref{tab:practical_summary}.
+\end{table}
 
 \clearpage
 \section{Supplementary Figures}
 
-\noindent
+Figure~\ref{fig:supp_ieee14_topology} shows the topology of the modified IEEE 14-bus test
+system. The five thermal units are located at Buses 1, 2, 3, 6, and 8, the 100 MW wind farm
+is connected at Bus 3, and the renewable-share tracing requirement is imposed at Bus 4.
+Branch 4--5 is removed compared with the standard MATPOWER \texttt{case14}, which makes the
+share-tracing results easier to interpret.
+
+\begin{figure}[!ht]
 \centering
-\begin{minipage}[t]{0.36\textwidth}
-\centering
-\includegraphics[width=0.96\linewidth]{figure/IEEE14-Eng.pdf}
-\captionof{figure}{Topology of the modified IEEE 14-bus test system.}
+\includegraphics[width=0.78\textwidth]{figure/IEEE14-Eng.pdf}
+\caption{Topology of the modified IEEE 14-bus test system.}
 \label{fig:supp_ieee14_topology}
-\end{minipage}
-\hfill
-\begin{minipage}[t]{0.61\textwidth}
+\end{figure}
+
+Figure~\ref{fig:supp_ieee14_parity} compares the network predictions with the ground-truth
+tracing results on the held-out samples, separated into low-wind and high-wind conditions.
+Each point corresponds to one sample; the closer the points lie to the diagonal line, the
+more accurate the neural-network surrogate. The parity behavior under both regimes confirms
+that the surrogate remains accurate across the operating range covered by the training data.
+
+\begin{figure}[!ht]
 \centering
-\vspace{1.0em}
-\includegraphics[width=\linewidth]{figure/ieee14_nn_generalization_regimes.pdf}
-\captionof{figure}{Held-out parity comparison under low- and high-wind conditions.}
+\includegraphics[width=0.92\textwidth]{figure/ieee14_nn_generalization_regimes.pdf}
+\caption{Held-out parity comparison under low- and high-wind conditions.}
 \label{fig:supp_ieee14_parity}
-\end{minipage}
+\end{figure}
 
 \end{document}
