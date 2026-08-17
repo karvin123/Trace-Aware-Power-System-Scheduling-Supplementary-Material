@@ -1,79 +1,48 @@
-\documentclass[10pt]{article}
+\documentclass[letterpaper,journal,onecolumn]{IEEEtran}
 
-\usepackage[a4paper,top=18mm,bottom=18mm,left=19mm,right=19mm,headsep=7mm]{geometry}
-\usepackage[T1]{fontenc}
-\usepackage{newtxtext,newtxmath}
-\usepackage{microtype}
-\usepackage[table]{xcolor}
+\usepackage{amsmath,amsfonts}
+\usepackage{array}
 \usepackage{booktabs}
 \usepackage{tabularx}
-\usepackage{array}
 \usepackage{graphicx}
-\usepackage{amsmath}
-\usepackage{caption}
-\usepackage{fancyhdr}
-\usepackage{titlesec}
-\usepackage{enumitem}
 \usepackage[hidelinks]{hyperref}
 
-\setlength{\parindent}{1.25em}
-\setlength{\parskip}{0.2em}
-\setlength{\tabcolsep}{5pt}
-\setlength{\headheight}{19pt}
-\renewcommand{\arraystretch}{1.08}
-\raggedbottom
-
-\pagestyle{fancy}
-\fancyhf{}
-\fancyhead[L]{\footnotesize\textsc{Supplementary Material}}
-\fancyhead[R]{\footnotesize Trace-Aware Power System Scheduling}
-\fancyfoot[C]{\footnotesize\thepage}
-\renewcommand{\headrulewidth}{0.4pt}
-\renewcommand{\headrule}{\hbox to\headwidth{\leaders\hrule height \headrulewidth\hfill}}
-
-\titleformat{\section}
-  {\large\bfseries}
-  {\thesection}{0.65em}{}
-  [\vspace{-0.35em}\titlerule]
-\titlespacing*{\section}{0pt}{1.15em}{0.65em}
-
-\captionsetup{
-  font=small,
-  labelfont=bf,
-  textfont=small,
-  justification=centering,
-  hypcap=false,
-  skip=5pt
-}
+\newcolumntype{Y}{>{\raggedright\arraybackslash}X}
+\newcolumntype{C}{>{\centering\arraybackslash}X}
 
 \renewcommand{\thesection}{S\arabic{section}}
 \renewcommand{\thetable}{S\arabic{table}}
 \renewcommand{\thefigure}{S\arabic{figure}}
 \renewcommand{\theequation}{S\arabic{equation}}
 
-\newcolumntype{Y}{>{\raggedright\arraybackslash}X}
-\newcolumntype{C}{>{\centering\arraybackslash}X}
-
 \begin{document}
 
-\begin{center}
-  {\small\bfseries\MakeUppercase{Supplementary Material}}\\[0.55em]
-  {\LARGE\bfseries Trace-Aware Power System Scheduling with\\[0.18em]
-  Heterogeneous Power Sources: A Learning-Based Framework}\\[0.8em]
-  {\normalsize Kai Xiong, Xiaomeng Ai, Jingguan Liu, Shichang Cui, Jiakun Fang,\\
-  Junliang Ye, Xiaohu Ge, and Jinyu Wen}\\[0.35em]
-  {\small State Key Laboratory of Advanced Electromagnetic Technology,\\
-  Huazhong University of Science and Technology, Wuhan, China}\\[0.2em]
-  {\small Corresponding author: Xiaomeng Ai (\href{mailto:xiaomengai@hust.edu.cn}{xiaomengai@hust.edu.cn})}
-\end{center}
+\title{Supplementary Material: Trace-Aware Power System Scheduling with Heterogeneous
+Power Sources: A Learning-Based Framework}
+\author{Kai Xiong,~\IEEEmembership{Student Member,~IEEE,}
+Xiaomeng Ai,~\IEEEmembership{Member,~IEEE,}
+Jingguan Liu,~\IEEEmembership{Student Member,~IEEE,}
+Shichang Cui,~\IEEEmembership{Member,~IEEE,}
+Jiakun Fang,~\IEEEmembership{Senior Member,~IEEE,}
+Junliang Ye,~\IEEEmembership{Member,~IEEE,}
+Xiaohu Ge,~\IEEEmembership{Member,~IEEE,}
+Jinyu Wen,~\IEEEmembership{Member,~IEEE,}
+\thanks{This document is the supplementary material accompanying the paper ``Trace-Aware
+Power System Scheduling with Heterogeneous Power Sources: A Learning-Based Framework.''
+(Corresponding author: Xiaomeng Ai.)\par
+Kai Xiong, Xiaomeng Ai, Jingguan Liu, Shichang Cui, Jiakun Fang, Junliang Ye, Xiaohu Ge,
+and Jinyu Wen are with the State Key Laboratory of Advanced Electromagnetic Technology,
+Huazhong University of Science and Technology, Wuhan, China (e-mail:
+\protect\url{Kai.13@foxmail.com}; \protect\url{xiaomengai@hust.edu.cn}).}}
+\markboth{Supplementary Material}%
+{Xiong \MakeLowercase{\textit{et al.}}: Trace-Aware Power System Scheduling with Heterogeneous Power Sources}
+\maketitle
 
-\vspace{0.3em}
-\noindent
-  This document accompanies the paper cited above. It describes, in a step-by-step manner,
-  the test-system settings, the neural-network training procedure, the exact mixed-integer
-  linear reformulation of the trained network, and the supplementary figures that support
-  the numerical studies. All quantities are reported in the same units as in the main
-  paper, and the notation is consistent with the one used there.
+This document accompanies the paper cited above. It describes, in a step-by-step manner,
+the test-system settings, the neural-network training procedure, the exact mixed-integer
+linear reformulation of the trained network, and the supplementary figures that support
+the numerical studies. All quantities are reported in the same units as in the main
+paper, and the notation is consistent with the one used there.
 
 \section{Modified IEEE 14-Bus Test System}
 
